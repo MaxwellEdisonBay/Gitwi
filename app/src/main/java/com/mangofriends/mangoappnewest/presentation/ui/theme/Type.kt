@@ -1,4 +1,4 @@
-package com.mangofriends.mangoappnewest.ui.theme
+package com.mangofriends.mangoappnewest.presentation.ui.theme
 
 import androidx.compose.material.Typography
 import androidx.compose.ui.text.TextStyle

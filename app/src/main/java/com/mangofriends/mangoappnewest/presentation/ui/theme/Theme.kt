@@ -1,4 +1,4 @@
-package com.mangofriends.mangoappnewest.ui.theme
+package com.mangofriends.mangoappnewest.presentation.ui.theme
 
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
