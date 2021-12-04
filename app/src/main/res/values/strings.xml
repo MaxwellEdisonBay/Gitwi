@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">MangoAppNewest</string>
+    <string name="title1">Sign in</string>
+    <string name="title2">to see an image!</string>
+    <string name="button_text">Sign In</string>
+    <string name="login_hint">Login</string>
+    <string name="password_hint">Password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+
+    <string name="error_msg_not_found">Server Error 404 - Not Found</string>
+    <string name="error_msg_not_authorized">Incorrect Username/Password</string>
+    <string name="error_msg_generic">Network Error - Something went wrong</string>
+    <string name="error_msg_no_internet">Network Error - No internet connection</string>
+    <string name="error_msg_incorrect_input">Please, fill in all the required fields</string>
+    <string name="error_msg_timeout">Network Error - Connection timeout</string>
+    <string name="error_unexpected_json">Data Error - Unexpected server response data</string>
+    <string name="error_failed_to_decode">Data Error - Failed to decode image</string>
+    <string name="success_displayed_image">Enjoy your image ʕ•́ᴥ•̀ʔっ♡</string>
 </resources>

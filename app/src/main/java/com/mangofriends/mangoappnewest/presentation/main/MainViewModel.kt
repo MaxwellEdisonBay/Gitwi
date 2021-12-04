@@ -8,6 +8,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mangofriends.mangoappnewest.common.Constants
 import com.mangofriends.mangoappnewest.common.Resource
+import com.mangofriends.mangoappnewest.domain.repository.FirebaseRepository
+import com.mangofriends.mangoappnewest.domain.use_case.FBRegisterWithCredentialsUseCase
 import com.mangofriends.mangoappnewest.domain.use_case.GetUsersUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
@@ -17,12 +19,14 @@ import javax.inject.Inject
 @HiltViewModel
 class MainViewModel @Inject constructor(
     private val getUsersUseCase: GetUsersUseCase,
+    private val firebaseRepository: FirebaseRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
     private val _state = mutableStateOf(ProfileListState())
     val state: State<ProfileListState> = _state
 
     init {
+
         Log.d("ViewModel","Created model")
 
         savedStateHandle.get<String>(Constants.PARAM_UID)?.let {
