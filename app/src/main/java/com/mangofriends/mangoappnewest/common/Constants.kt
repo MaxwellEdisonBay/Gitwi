@@ -8,9 +8,10 @@ object Constants {
     const val READ_TIMEOUT_SECONDS = 60
     const val CONNECTION_TIMEOUT_SECONDS = 60
 
+    const val BACK_PRESS_DELAY = 2000
+    const val START_TIME = -2000L
 
-    const val MIN_PASSWORD_CHARS = 8
-    const val MAX_TEXTFIELD_CHARS = 30
-
+    const val MIN_AGE = 18f
+    const val MAX_AGE = 50f
 
 }

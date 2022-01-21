@@ -1,28 +1,45 @@
 package com.mangofriends.mangoappnewest.domain.repository
 
-import androidx.lifecycle.MutableLiveData
 import androidx.navigation.NavController
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-import com.google.firebase.auth.FirebaseAuth
-import com.mangofriends.mangoappnewest.common.Resource
-import com.mangofriends.mangoappnewest.domain.model.dto.UserProfile
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBRequestCall
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.UserCredentials
-import kotlinx.coroutines.flow.FlowCollector
+import com.mangofriends.mangoappnewest.presentation.main.MainViewModel
+import com.mangofriends.mangoappnewest.presentation.register.RegisterViewModel
 
 interface FirebaseRepository {
-    suspend fun registerWithEmailAndPassword(credentials: UserCredentials) : FBRequestCall
+    suspend fun registerWithEmailAndPassword(
+        viewModel: RegisterViewModel,
+        navController: NavController,
+        onError: (String) -> Unit = {}
+    ): FBRequestCall
 
-    suspend fun signInWithEmailAndPassword(credentials: UserCredentials, navController: NavController): FBRequestCall
+    suspend fun signInWithEmailAndPassword(
+        credentials: UserCredentials,
+        navController: NavController,
+        onError: (String) -> Unit = {}
+    ): FBRequestCall
 
-    fun uploadImagesToFireCloud(uris: List<String>) : List<String>
+    fun uploadImagesToFireCloud(
+        viewModel: RegisterViewModel,
+        navController: NavController,
+        onError: (String) -> Unit
+    ): FBRequestCall
 
-    fun uploadregistrationDataToFirebase(profile : UserProfile): MutableLiveData<FBRequestCall>
+    fun uploadRegistrationDataToFirebase(
+        viewModel: RegisterViewModel,
+        navController: NavController,
+        onError: (String) -> Unit
+    ): FBRequestCall
 
-    fun checkIfLoggedIn():Boolean
+    fun checkIfLoggedIn(): Boolean
 
-    fun signOut()
+    fun getUid(): String
 
-    fun getUID() : String?
+    fun likeUser(myUid: String, uid: String, onLike: () -> Unit = {}): FBRequestCall
+
+    fun checkMatch(myUid: String, uid: String, onMatch: () -> Unit = {}): FBRequestCall
+
+    fun signOut(navController: NavController)
+
+    fun loadMatches(viewModel: MainViewModel)
 }

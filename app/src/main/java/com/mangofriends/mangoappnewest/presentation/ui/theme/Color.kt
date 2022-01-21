@@ -4,13 +4,13 @@ import androidx.compose.ui.graphics.Color
 import android.graphics.Color as GColor
 
 
-val LightPink = Color(GColor.parseColor("#F4ACB7"))
-val Pink = Color(GColor.parseColor("#FFCAD4"))
+val Pink = Color(GColor.parseColor("#F4ACB7"))
+val LightPink = Color(GColor.parseColor("#FFCAD4"))
 val ChampagnePink = Color(GColor.parseColor("#FFE5D9"))
 val Alabaster = Color(GColor.parseColor("#D8E2DC"))
 val MountBattenPink = Color(GColor.parseColor("#9D8189"))
-
-
+val MediumGray = Color(GColor.parseColor("#A9A9A9"))
+val LightGreen = Color(GColor.parseColor("#94ffb0"))
 
 val Purple200 = Color(0xFFBB86FC)
 val Purple500 = Color(0xFF6200EE)

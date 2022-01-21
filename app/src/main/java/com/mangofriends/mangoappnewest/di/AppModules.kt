@@ -1,12 +1,13 @@
 package com.mangofriends.mangoappnewest.di
 
-import com.google.firebase.auth.FirebaseAuth
 import com.mangofriends.mangoappnewest.BuildConfig
 import com.mangofriends.mangoappnewest.common.Constants
 import com.mangofriends.mangoappnewest.data.api.MangoApi
 import com.mangofriends.mangoappnewest.data.repository.FirebaseRepositoryImpl
+import com.mangofriends.mangoappnewest.data.repository.InputRepositoryImpl
 import com.mangofriends.mangoappnewest.data.repository.UserProfileRepositoryImpl
 import com.mangofriends.mangoappnewest.domain.repository.FirebaseRepository
+import com.mangofriends.mangoappnewest.domain.repository.InputRepository
 import com.mangofriends.mangoappnewest.domain.repository.UserProfileRepository
 import dagger.Module
 import dagger.Provides
@@ -33,7 +34,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideMangoApi(okHttpClient: OkHttpClient) : MangoApi {
+    fun provideMangoApi(okHttpClient: OkHttpClient): MangoApi {
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL)
             .client(okHttpClient)
@@ -44,14 +45,19 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserProfileRepository(api:MangoApi): UserProfileRepository{
+    fun provideUserProfileRepository(api: MangoApi): UserProfileRepository {
         return UserProfileRepositoryImpl(api)
     }
 
     @Provides
     @Singleton
-    fun provideFirebaseRepository() : FirebaseRepository {
+    fun provideFirebaseRepository(): FirebaseRepository {
         return FirebaseRepositoryImpl()
+    }
+
+    @Provides
+    fun provide(): InputRepository {
+        return InputRepositoryImpl()
     }
 
 }

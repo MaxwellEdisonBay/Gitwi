@@ -24,7 +24,7 @@ fun ProfilesListItem(
             .clickable { onItemClick(profile) }
             .padding(20.dp),
         verticalArrangement = Arrangement.SpaceBetween,
-    ){
+    ) {
         Text(
             text = "${profile.name}. ${profile.lastname} - ${profile.age}",
             style = MaterialTheme.typography.body1,
@@ -40,13 +40,13 @@ fun ProfilesListItem(
             modifier = Modifier.align(Alignment.Start)
         )
         Spacer(modifier = Modifier.height(15.dp))
-        FlowRow (
+        FlowRow(
             mainAxisSpacing = 10.dp,
             crossAxisSpacing = 10.dp,
             modifier = Modifier.fillMaxWidth()
 
-                ){
-            profile.tags.forEach{
+        ) {
+            profile.tags.forEach {
                 ProfileTag(tag = it)
             }
         }

@@ -1,9 +1,7 @@
 package com.mangofriends.mangoappnewest.domain.use_case
 
+import android.util.Log
 import androidx.navigation.NavController
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.mangofriends.mangoappnewest.common.Constants
 import com.mangofriends.mangoappnewest.common.Resource
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.UserCredentials
@@ -19,11 +17,13 @@ class FBSignInWithEmailAndPasswordUseCase @Inject constructor(
 ) {
     operator fun invoke(
         userCredentials: UserCredentials,
-        navController: NavController
+        navController: NavController,
+        onError: (String) -> Unit
     ): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
-            val authResult = repository.signInWithEmailAndPassword(userCredentials, navController)
+            val authResult =
+                repository.signInWithEmailAndPassword(userCredentials, navController, onError)
             if (authResult.status == Constants.CODE_SUCCESS) {
                 emit(Resource.Success(authResult.message))
             } else
@@ -40,10 +40,10 @@ class FBSignInWithEmailAndPasswordUseCase @Inject constructor(
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))
         } catch (e: IOException) {
             emit(Resource.Error("Couldn't reach server. Check your internet connection"))
+        } catch (e: Exception) {
+            Log.d("ERROR CATCH", e.message.toString())
+            emit(Resource.Error(e.localizedMessage ?: "Generic exception"))
         }
-//        catch (e: Exception) {
-//            emit(Resource.Error(e.localizedMessage ?: "Generic exception"))
-//        }
     }
 
 }

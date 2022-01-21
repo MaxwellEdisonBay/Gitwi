@@ -5,11 +5,11 @@ import com.mangofriends.mangoappnewest.domain.model.dto.UserProfile
 import com.mangofriends.mangoappnewest.domain.repository.UserProfileRepository
 import javax.inject.Inject
 
-class UserProfileRepositoryImpl @Inject constructor (
+class UserProfileRepositoryImpl @Inject constructor(
     private val api: MangoApi
-        ) : UserProfileRepository {
+) : UserProfileRepository {
 
-    override suspend fun getProfiles(uid:String): List<UserProfile> {
+    override suspend fun getProfiles(uid: String): List<UserProfile> {
         return api.getProfiles(uid)
     }
 

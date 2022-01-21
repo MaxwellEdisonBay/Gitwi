@@ -6,5 +6,5 @@ import retrofit2.http.Path
 
 interface MangoApi {
     @GET("/get-users/{uid}")
-    suspend fun getProfiles(@Path("uid") uid: String) : List<UserProfile>
+    suspend fun getProfiles(@Path("uid") uid: String): List<UserProfile>
 }

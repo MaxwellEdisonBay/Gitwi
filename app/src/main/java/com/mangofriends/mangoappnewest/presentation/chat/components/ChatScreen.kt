@@ -9,9 +9,11 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 
 @Composable
-fun ChatScreen(uid: String?, navController: NavController){
-    Box(modifier = Modifier.fillMaxSize()){
-        Text(text = "Your UID is: ${uid!!}",
-        modifier = Modifier.align(Alignment.Center))
+fun ChatScreen(uid: String?, navController: NavController) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Text(
+            text = "Your UID is: ${uid!!}",
+            modifier = Modifier.align(Alignment.Center)
+        )
     }
 }
