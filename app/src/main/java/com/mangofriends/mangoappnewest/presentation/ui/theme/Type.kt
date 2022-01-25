@@ -21,12 +21,24 @@ val Typography = Typography(
         fontSize = 18.sp,
         color = Pink
     ),
+    h3 = TextStyle(
+        fontFamily = robotoFontFamily,
+        fontWeight = FontWeight.W500,
+        fontSize = 16.sp,
+        color = Pink
+    ),
 
     body1 = TextStyle(
         fontFamily = robotoFontFamily,
         fontWeight = FontWeight.W300,
         fontSize = 16.sp,
         color = MountBattenPink
+    ),
+    body2 = TextStyle(
+        fontFamily = robotoFontFamily,
+        fontWeight = FontWeight.W300,
+        fontSize = 14.sp,
+        color = Color.LightGray
     ),
     button = TextStyle(
         fontFamily = robotoFontFamily,

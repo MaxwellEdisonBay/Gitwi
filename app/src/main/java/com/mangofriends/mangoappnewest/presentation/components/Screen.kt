@@ -3,11 +3,12 @@ package com.mangofriends.mangoappnewest.presentation.components
 sealed class Screen(val route: String) {
     object LoginScreen : Screen("login_screen")
     object MainScreen : Screen("main_screen")
-    object ChatScreen : Screen("chat_screen")
+    object ChatScreen : Screen("chat_screen?match={match}")
     object RegisterScreen : Screen("register_screen")
     object RegisterStep1 : Screen("register_step1")
     object RegisterStep2 : Screen("register_step2")
     object RegisterStep3 : Screen("register_step3")
+    object DetailsScreen : Screen("details?profile={profile}")
 
     fun withArgs(vararg args: String): String {
         return buildString {

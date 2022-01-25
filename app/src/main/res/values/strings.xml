@@ -39,7 +39,17 @@
     <string name="notification_new_match">You\'ve just got a match!</string>
     <string name="warning_press_back_to_exit">Tap back again to exit</string>
 
+    <string-array name="details_row_titles">
+        <item>Gender</item>
+        <item>Age</item>
+        <item>City</item>
+        <item>Occupation</item>
+        <item>Bio</item>
+    </string-array>
+
     <string name="settings_log_out">Log out</string>
+    <string name="drawer_title">\ - Messages</string>
+
 
     <string name="error_msg_not_found">Server Error 404 - Not Found</string>
     <string name="error_msg_not_authorized">Incorrect Username/Password</string>
@@ -47,7 +57,4 @@
     <string name="error_msg_no_internet">Network Error - No internet connection</string>
     <string name="error_msg_incorrect_input">Please, fill in all the required fields</string>
     <string name="error_msg_timeout">Network Error - Connection timeout</string>
-    <string name="error_unexpected_json">Data Error - Unexpected server response data</string>
-    <string name="error_failed_to_decode">Data Error - Failed to decode image</string>
-    <string name="success_displayed_image">Enjoy your image ʕ•́ᴥ•̀ʔっ♡</string>
 </resources>

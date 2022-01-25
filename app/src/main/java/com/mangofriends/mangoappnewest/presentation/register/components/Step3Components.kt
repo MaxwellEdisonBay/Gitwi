@@ -94,10 +94,9 @@ fun Next3Button(viewModel: RegisterViewModel, navController: NavController) {
                 }
                 if (viewModel.isData3Correct()) {
                     viewModel.performRegister(viewModel, navController, onError = {
-                        Toast.makeText(context,it,Toast.LENGTH_SHORT).show()
+                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
                     })
-                }
-                else {
+                } else {
                     Toast.makeText(context, R.string.error_msg_incorrect_input, Toast.LENGTH_SHORT)
                         .show()
                 }

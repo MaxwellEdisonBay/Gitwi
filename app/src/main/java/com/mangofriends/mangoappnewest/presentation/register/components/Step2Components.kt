@@ -35,7 +35,6 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toSize
-import coil.annotation.ExperimentalCoilApi
 import com.mangofriends.mangoappnewest.R
 import com.mangofriends.mangoappnewest.presentation.components.Screen
 import com.mangofriends.mangoappnewest.presentation.register.RegisterViewModel
@@ -65,7 +64,6 @@ fun PersonalInfoLabel() {
 }
 
 
-@ExperimentalCoilApi
 @Composable
 fun UploadImage(viewModel: RegisterViewModel) {
     val noUserImage = ImageBitmap.imageResource(R.drawable.empty)

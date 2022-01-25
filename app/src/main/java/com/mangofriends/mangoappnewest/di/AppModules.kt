@@ -29,6 +29,7 @@ object AppModule {
         return OkHttpClient.Builder()
             .connectTimeout(Constants.CONNECTION_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
             .readTimeout(Constants.READ_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .cache(null)
             .build()
     }
 
@@ -45,8 +46,11 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideUserProfileRepository(api: MangoApi): UserProfileRepository {
-        return UserProfileRepositoryImpl(api)
+    fun provideUserProfileRepository(
+        api: MangoApi,
+        firebaseRepository: FirebaseRepository
+    ): UserProfileRepository {
+        return UserProfileRepositoryImpl(api, firebaseRepository)
     }
 
     @Provides
@@ -56,7 +60,8 @@ object AppModule {
     }
 
     @Provides
-    fun provide(): InputRepository {
+    @Singleton
+    fun provideInputRepository(): InputRepository {
         return InputRepositoryImpl()
     }
 

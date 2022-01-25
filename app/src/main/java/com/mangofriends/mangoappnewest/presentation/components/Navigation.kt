@@ -6,20 +6,20 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.ExperimentalComposeUiApi
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
 import coil.annotation.ExperimentalCoilApi
-import com.mangofriends.mangoappnewest.common.Constants
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
+import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBMatch
 import com.mangofriends.mangoappnewest.presentation.chat.components.ChatScreen
+import com.mangofriends.mangoappnewest.presentation.details.DetailsScreen
 import com.mangofriends.mangoappnewest.presentation.login.LoginScreen
 import com.mangofriends.mangoappnewest.presentation.main.MainScreen
 import com.mangofriends.mangoappnewest.presentation.register.RegisterScreen
 
-@ExperimentalComposeUiApi
 @ExperimentalCoilApi
+@ExperimentalComposeUiApi
 @ExperimentalMaterialApi
 @ExperimentalAnimationApi
 @Composable
@@ -36,26 +36,22 @@ fun Navigation() {
 
             }
             composable(
-                route = Screen.MainScreen.route + "/{" + Constants.PARAM_UID + "}",
-                arguments = listOf(navArgument(Constants.PARAM_UID) {
-                    type = NavType.StringType
-                    defaultValue = "Maxwell"
-                    nullable = true
-                })
+                route = Screen.MainScreen.route,
             ) {
                 MainScreen(
                     navController = navController
                 )
             }
             composable(
-                route = Screen.ChatScreen.route + "/{" + Constants.PARAM_UID + "}",
-                arguments = listOf(navArgument(Constants.PARAM_UID) {
-                    type = NavType.StringType
-                    defaultValue = "Maxwell"
-                    nullable = true
-                })
-            ) {
-                ChatScreen(uid = it.arguments?.getString(Constants.PARAM_UID), navController)
+                route = Screen.ChatScreen.route,
+
+                ) {
+                val profile =
+                    navController.previousBackStackEntry?.arguments?.getParcelable<FBMatch>("match")
+                val myphoto = navController.previousBackStackEntry?.arguments?.getString("my_photo")
+                if (profile != null && myphoto != null) {
+                    ChatScreen(profile, myphoto, navController)
+                }
             }
 
             composable(
@@ -63,6 +59,16 @@ fun Navigation() {
             ) {
                 EnterAnimation {
                     RegisterScreen(navController)
+                }
+            }
+
+            composable(
+                route = Screen.DetailsScreen.route
+            ){
+                val profile =
+                    navController.previousBackStackEntry?.arguments?.getParcelable<DTOUserProfile>("profile")
+                if (profile != null ) {
+                    DetailsScreen(profile, navController)
                 }
             }
         }

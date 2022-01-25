@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import com.mangofriends.mangoappnewest.common.paddingOffset
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.presentation.main.animations.CardSwipeAnimation
 import com.mangofriends.mangoappnewest.presentation.main.animations.CardsInDeckAnimation
 import com.mangofriends.mangoappnewest.presentation.main.animations.FlipCardAnimation
@@ -19,7 +20,7 @@ data class CardDeckEvents(
     val model: CardDeckModel,
     val peepHandler: () -> Unit,
     val playHandler: (String, String) -> Unit,
-    val nextHandler: (String, Boolean) -> Unit,
+    val nextHandler: (DTOUserProfile, Boolean) -> Unit,
     val actionCallback: (String) -> Unit = {}
 ) {
     val cardSwipe: CardSwipeAnimation = CardSwipeAnimation(
@@ -58,9 +59,9 @@ data class CardDeckEvents(
                                         flipCard.backToInitState()
                                     }
                                     if (isLike)
-                                        nextHandler(model.dataSource[topCardIndex].user.uid, true)
+                                        nextHandler(model.dataSource[topCardIndex].user, true)
                                     else
-                                        nextHandler(model.dataSource[topCardIndex].user.uid, false)
+                                        nextHandler(model.dataSource[topCardIndex].user, false)
                                 }
 
                             }

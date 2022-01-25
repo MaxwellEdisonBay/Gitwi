@@ -2,7 +2,7 @@ package com.mangofriends.mangoappnewest.domain.use_case
 
 import android.util.Log
 import com.mangofriends.mangoappnewest.common.Resource
-import com.mangofriends.mangoappnewest.domain.model.dto.UserProfile
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.domain.repository.UserProfileRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -13,10 +13,10 @@ import javax.inject.Inject
 class RFGetUsersUseCase @Inject constructor(
     private val repository: UserProfileRepository
 ) {
-    operator fun invoke(uid: String): Flow<Resource<List<UserProfile>>> = flow {
+    operator fun invoke(): Flow<Resource<List<DTOUserProfile>>> = flow {
         try {
             emit(Resource.Loading())
-            val profiles = repository.getProfiles(uid)
+            val profiles = repository.getProfiles()
             emit(Resource.Success(profiles))
         } catch (e: HttpException) {
             emit(Resource.Error(e.localizedMessage ?: "An unexpected error occurred"))

@@ -226,10 +226,9 @@ fun Next1Button(viewModel: RegisterViewModel) {
         OutlinedButton(
             onClick = {
                 focusManager.clearFocus()
-                if (viewModel.isData1Correct()){
+                if (viewModel.isData1Correct()) {
                     viewModel.moveToPage(Screen.RegisterStep2.route, false)
-                }
-                else{
+                } else {
                     Toast.makeText(context, R.string.error_msg_incorrect_input, Toast.LENGTH_SHORT)
                         .show()
                 }

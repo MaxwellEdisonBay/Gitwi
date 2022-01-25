@@ -19,3 +19,5 @@ val cardHeight = 700.dp
 const val paddingOffset = 0f
 
 const val animationTime = 250
+
+const val cardsVisible = 2

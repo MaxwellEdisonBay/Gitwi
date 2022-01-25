@@ -22,7 +22,7 @@ fun LoginScreen(
     val focusManager = LocalFocusManager.current
     val interactionSource = remember { MutableInteractionSource() }
     if (viewModel.isLogged) {
-        navController.navigate(Screen.MainScreen.route + "/uid") {
+        navController.navigate(Screen.MainScreen.route) {
             popUpTo(0)
         }
     } else {

@@ -11,12 +11,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import coil.annotation.ExperimentalCoilApi
 import com.mangofriends.mangoappnewest.presentation.components.Screen
 import com.mangofriends.mangoappnewest.presentation.register.components.*
 
 
-@ExperimentalCoilApi
 @Composable
 fun Step2(
     viewModel: RegisterViewModel = hiltViewModel()

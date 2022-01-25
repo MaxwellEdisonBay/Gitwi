@@ -1,6 +1,7 @@
 package com.mangofriends.mangoappnewest.presentation
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -13,12 +14,13 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @ExperimentalAnimationApi
 @ExperimentalMaterialApi
-@ExperimentalComposeUiApi
 @ExperimentalCoilApi
+@ExperimentalComposeUiApi
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Log.d("ONSTART", "App started")
 
         setContent {
             MangoAppNewestTheme {
@@ -26,6 +28,7 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
 }
 
 

@@ -7,7 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.mangofriends.mangoappnewest.common.Constants
-import com.mangofriends.mangoappnewest.domain.model.dto.UserProfile
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBProfileImageUrl
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBTag
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.UserCredentials
@@ -71,7 +71,6 @@ class RegisterViewModel @Inject constructor(
 
 }
 
-
 class RegisterState {
     val nameState: ShortASCIIFieldState = ShortASCIIFieldState()
     val emailState: EmailFieldState = EmailFieldState()
@@ -93,8 +92,10 @@ class RegisterState {
     val urlState = mutableListOf<FBProfileImageUrl>()
     val tagState = mutableListOf<FBTag>()
 
-    fun getProfile(): UserProfile {
-        return UserProfile(
+    var isLoading = mutableStateOf(false)
+
+    fun getProfile(): DTOUserProfile {
+        return DTOUserProfile(
             this.ageState.text.toInt(),
             this.bioState.text,
             this.genderState.value,

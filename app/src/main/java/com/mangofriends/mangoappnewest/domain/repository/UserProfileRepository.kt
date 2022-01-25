@@ -1,7 +1,7 @@
 package com.mangofriends.mangoappnewest.domain.repository
 
-import com.mangofriends.mangoappnewest.domain.model.dto.UserProfile
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 
 interface UserProfileRepository {
-    suspend fun getProfiles(uid: String): List<UserProfile>
+    suspend fun getProfiles(): List<DTOUserProfile>
 }

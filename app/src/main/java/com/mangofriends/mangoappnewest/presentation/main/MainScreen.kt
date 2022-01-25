@@ -5,8 +5,10 @@ import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -15,7 +17,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.annotation.ExperimentalCoilApi
 import com.mangofriends.mangoappnewest.R
-import com.mangofriends.mangoappnewest.presentation.main.components.ScaffoldExample
+import com.mangofriends.mangoappnewest.presentation.main.components.MainScaffold
 
 @ExperimentalCoilApi
 @ExperimentalMaterialApi
@@ -35,31 +37,11 @@ fun MainScreen(
             if (viewModel.isBackExit()) activity.finish() else
                 Toast.makeText(context, warningText, Toast.LENGTH_LONG).show()
         }
-//        LazyColumn(modifier = Modifier.fillMaxSize()) {
-//            items(state.profiles) { profile ->
-//                ProfilesListItem(profile = profile,
-//                    onItemClick = {
-//                        navController.navigate(Screen.ChatScreen.route + "/${profile.uid}")
-//                    })
-//            }
-//        }
-//        if (state.error.isNotBlank()) {
-//            Text(
-//                text = state.error,
-//                color = MaterialTheme.colors.error,
-//                textAlign = TextAlign.Center,
-//                modifier = Modifier
-//                    .fillMaxWidth()
-//                    .padding(horizontal = 20.dp)
-//                    .align(Alignment.Center)
-//            )
-//        }
 
-        ScaffoldExample(viewModel, navController)
-//        if (state.isLoading) {
-//            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center).fillMaxSize())
-//        }
+        if (state.isLoading) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        } else {
+            MainScaffold(viewModel, navController)
+        }
     }
-
-
 }

@@ -12,6 +12,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.mangofriends.mangoappnewest.common.Constants
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.*
 import com.mangofriends.mangoappnewest.domain.repository.FirebaseRepository
 import com.mangofriends.mangoappnewest.presentation.components.Screen
@@ -61,12 +62,12 @@ class FirebaseRepositoryImpl @Inject constructor(
             .addOnCompleteListener {
                 if (it.isSuccessful) {
                     result.status = Constants.CODE_SUCCESS
-                    Log.d("DEBUG TAG", "SUCCESS ${auth.currentUser?.uid ?: "null"}")
+                    Log.d("LOGIN", "SUCCESS ${auth.currentUser?.uid ?: "null"}")
                     navController.navigate(
-                        Screen.MainScreen.withArgs(
-                            auth.currentUser?.uid ?: "null"
-                        )
-                    )
+                        Screen.MainScreen.route
+                    ) {
+                        popUpTo(0)
+                    }
                 }
             }
             .addOnFailureListener {
@@ -90,10 +91,11 @@ class FirebaseRepositoryImpl @Inject constructor(
 
 
         val storageRef = Firebase.storage.reference
-        val ref = storageRef.child("images/profile_photos")
+        val imageUUID = UUID.randomUUID()
+        val ref = storageRef.child("images/$imageUUID")
         val uploadTask = ref.putFile(Uri.parse(viewModel.state.imageUriState.value.toString()))
 
-        val urlTask = uploadTask.continueWithTask { task ->
+        uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
                 task.exception?.let {
                     throw it
@@ -141,7 +143,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                 viewModel.state.getProfile()
             )
             .addOnSuccessListener {
-                Log.d("USER INFO", "SUCCESS #1")
+                Log.d("USER INFO", "SUCCESS #1 - User Profile")
                 result.status = Constants.CODE_SUCCESS
                 val imageUuid = viewModel.state.urlState.first().img_id
                 database.child("users").child(uid).child("profile_image_urls").child(imageUuid)
@@ -150,13 +152,15 @@ class FirebaseRepositoryImpl @Inject constructor(
                     )
 
                     .addOnSuccessListener {
-                        Log.d("USER INFO", "SUCCESS #3")
+                        Log.d("USER INFO", "SUCCESS #2 - User profile image urls")
                         database.child("users").child(uid).child("tags")
                             .child(imageUuid)
                             .setValue(
                                 viewModel.state.tagState.first()
                             ).addOnSuccessListener {
+                                Log.d("USER INFO", "SUCCESS #2 - User profile interest tags")
                                 result.status = Constants.CODE_SUCCESS
+                                viewModel.state.isLoading.value = false
                                 navController.navigate(Screen.MainScreen.route + "/Maxwell") {
                                     popUpTo(0)
                                 }
@@ -193,12 +197,12 @@ class FirebaseRepositoryImpl @Inject constructor(
         val liked = FBLike(uid, System.currentTimeMillis())
         val likedMe = FBLike(myUid, System.currentTimeMillis())
 
-        database.child("users").child(uid).child("liked-me").child(myUid).setValue(likedMe)
+        database.child("users").child(uid).child("liked_me").child(myUid).setValue(likedMe)
             .addOnSuccessListener {
                 database.child("users").child(myUid).child("liked").child(uid).setValue(liked)
                     .addOnSuccessListener {
                         result.status = Constants.CODE_SUCCESS
-                        Log.d("FB DATABASE", "Liked successfully")
+                        Log.d("FB DATABASE", "I am $myUid, Liked $uid successfully")
                         onLike.invoke()
                     }
                     .addOnFailureListener {
@@ -215,41 +219,66 @@ class FirebaseRepositoryImpl @Inject constructor(
         return FBRequestCall()
     }
 
-    override fun checkMatch(myUid: String, uid: String, onMatch: () -> Unit): FBRequestCall {
+    override fun checkMatch(
+        currentUser: FBUserProfile,
+        user: DTOUserProfile,
+        onMatch: (Boolean) -> Unit
+    ): FBRequestCall {
         val result = FBRequestCall()
-        val database = Firebase.database.reference
-        database.child("users").child(uid).child("liked").get().addOnSuccessListener { iter ->
-            val likes = iter.children
-            likes.forEach {
-                val value = it.getValue(FBLike::class.java)
-                Log.i("firebase", "Got value ${value}\n")
-                if (value!!.uid == myUid) {
-                    Log.d("MATCH", "Here is a match with ${value.uid}\n")
-                    val liked = FBLike(uid, System.currentTimeMillis())
-                    val likedMe = FBLike(myUid, System.currentTimeMillis())
-                    database.child("users").child(uid).child("matches").child(myUid)
+        val database = Firebase.database.getReference("/users")
+        val likedMeList = currentUser.liked_me.keys.toList()
+        Log.d("CHECK MATCH", "Current user is ${user.uid}")
+        Log.d("DEBUG_MATCH", currentUser.liked_me.keys.toList().toString())
+        if (likedMeList.isNotEmpty()) {
+            var flag = false
+            likedMeList.forEach { iter ->
+                Log.d(
+                    "CHECK MATCH",
+                    "Checking match with liked-me element $iter (I liked ${user.uid})"
+                )
+                if (iter == user.uid) {
+                    flag = true
+                    Log.d("MATCH", "Here is a match with ${iter}\n")
+                    val liked = FBMatch(
+                        user.uid,
+                        System.currentTimeMillis(),
+                        user.profile_image_urls[0].url,
+                        user.name,
+                        Constants.EMPTY_LAST_MESSAGE + "${user.name}!",
+                        System.currentTimeMillis()
+                    )
+                    val likedMe = FBMatch(
+                        currentUser.uid,
+                        System.currentTimeMillis(),
+                        currentUser.profile_image_urls.values.toList()[0].url,
+                        currentUser.name,
+                        Constants.EMPTY_LAST_MESSAGE,
+                        System.currentTimeMillis()
+                    )
+                    database.child(user.uid).child("matches").child(currentUser.uid)
                         .setValue(likedMe).addOnSuccessListener {
-                            database.child("users").child(myUid).child("matches").child(uid)
+                            database.child(currentUser.uid).child("matches").child(user.uid)
                                 .setValue(liked).addOnSuccessListener {
                                     Log.i("MATCH", "Match Success\n")
-                                    onMatch.invoke()
+                                    onMatch.invoke(true)
                                     result.status = Constants.CODE_SUCCESS
+
                                 }
                         }
-                } else {
-                    result.status = Constants.CODE_SUCCESS
-                    Log.i("MATCH", "No match Success\n")
                 }
 
+
             }
-
-
-        }.addOnFailureListener {
-            Log.e("firebase", "Error getting data", it)
-            result.status = Constants.CODE_ERROR
-            result.message = it.message.toString()
+            if (!flag) {
+                onMatch.invoke(false)
+                result.status = Constants.CODE_SUCCESS
+                Log.i("MATCH", "No match Success\n")
+            }
+        } else {
+            onMatch.invoke(false)
+            result.status = Constants.CODE_SUCCESS
+            Log.i("MATCH", "No match Success Empty Array\n")
         }
-
 
 
         return result
@@ -265,11 +294,39 @@ class FirebaseRepositoryImpl @Inject constructor(
 
     override fun loadMatches(viewModel: MainViewModel) {
         val database = Firebase.database
-        val uid = viewModel.uid
-        val reflatitude = database.getReference("/user/${uid}/matches")
+        val uid = viewModel.currentUser.value.uid
+        val reflatitude = database.getReference("/users")
         reflatitude.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
-                Log.d("LOAD MATCHES", dataSnapshot.toString())
+                val children = dataSnapshot.child("${uid}/matches").children
+                children.forEach {
+
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Failed to read value
+                Log.w("LOAD MATCHES", "Failed to read value.", error.toException())
+            }
+        })
+    }
+
+    override fun getCurrentUser(viewModel: MainViewModel, onFirstLoad: () -> Unit) {
+        val uid = getUid()
+        val database = Firebase.database
+        val reflatitude = database.getReference("/users/$uid")
+        reflatitude.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                val profile = dataSnapshot.getValue(FBUserProfile::class.java)
+                if (profile != null) {
+                    viewModel.currentUser.value = profile
+                }
+                print(profile)
+                if (viewModel.isFirstLoad.value) {
+                    onFirstLoad.invoke()
+                    viewModel.isFirstLoad.value = false
+                }
+
 
             }
 
@@ -278,6 +335,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                 Log.w("LOAD MATCHES", "Failed to read value.", error.toException())
             }
         })
+
     }
 
 }

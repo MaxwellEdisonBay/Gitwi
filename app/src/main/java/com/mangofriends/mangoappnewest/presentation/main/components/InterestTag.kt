@@ -10,11 +10,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import com.mangofriends.mangoappnewest.domain.model.dto.Tag
+import com.mangofriends.mangoappnewest.domain.model.dto.DTOTag
 
 @Composable
 fun ProfileTag(
-    tag: Tag
+    tag: DTOTag
 ) {
     Box(
         modifier = Modifier

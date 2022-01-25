@@ -22,9 +22,11 @@ class FBRegisterWithCredentialsUseCase @Inject constructor(
     ): Flow<Resource<String>> = flow {
         try {
             emit(Resource.Loading())
+            viewModel.state.isLoading.value = true
             val authResult =
                 repository.registerWithEmailAndPassword(viewModel, navController, onError)
             if (authResult.status == Constants.CODE_SUCCESS) {
+
                 emit(Resource.Success(authResult.message))
             } else
                 emit(Resource.Error(authResult.message))
