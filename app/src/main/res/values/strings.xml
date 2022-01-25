@@ -1,3 +1,60 @@
 <resources>
-    <string name="app_name">MangoAppNewest</string>
+    <string name="app_name">Mango Friends</string>
+    <string name="main_title_1">Sign in</string>
+    <string name="main_title_2">to see an image!</string>
+    <string name="button_text">Sign In</string>
+    <string name="login_hint">Login</string>
+    <string name="email_hint">Email</string>
+    <string name="name_hint">Name</string>
+    <string name="password_hint">Password</string>
+    <string name="password_repeat_hint">Repeat password</string>
+    <string name="hide_password">Hide password</string>
+    <string name="show_password">Show password</string>
+    <string name="register_text">Create a profile</string>
+
+    <string name="login_title">Sign in to Mango</string>
+
+    <string name="reg_title_1">Welcome to MangoAPP!</string>
+    <string name="reg_title_2">Please, answer some questions to create an account</string>
+
+    <string name="reg_title_personal_1">Something About You</string>
+    <string name="reg_title_personal_2">Feel free to introduce yourself to other people</string>
+
+    <string name="reg_personal_select_gender">Select gender</string>
+    <string-array name="gender_options">
+        <item>Male</item>
+        <item>Female</item>
+        <item>Other</item>
+    </string-array>
+    <string name="city_hint">City</string>
+    <string name="bio_hint">Fill in your bio</string>
+    <string name="age_hint">Age</string>
+
+    <string name="reg_title_search_1">Search</string>
+    <string name="reg_title_search_2">Set up your search preferences</string>
+    <string name="reg_search_age_hint">Choose age range</string>
+    <string name="reg_search_city_hint">Show users from city</string>
+    <string name="reg_search_interest_tag_switch_text">Ignore interest tags</string>
+
+    <string name="notification_new_match">You\'ve just got a match!</string>
+    <string name="warning_press_back_to_exit">Tap back again to exit</string>
+
+    <string-array name="details_row_titles">
+        <item>Gender</item>
+        <item>Age</item>
+        <item>City</item>
+        <item>Occupation</item>
+        <item>Bio</item>
+    </string-array>
+
+    <string name="settings_log_out">Log out</string>
+    <string name="drawer_title">\ - Messages</string>
+
+
+    <string name="error_msg_not_found">Server Error 404 - Not Found</string>
+    <string name="error_msg_not_authorized">Incorrect Username/Password</string>
+    <string name="error_msg_generic">Network Error - Something went wrong</string>
+    <string name="error_msg_no_internet">Network Error - No internet connection</string>
+    <string name="error_msg_incorrect_input">Please, fill in all the required fields</string>
+    <string name="error_msg_timeout">Network Error - Connection timeout</string>
 </resources>
