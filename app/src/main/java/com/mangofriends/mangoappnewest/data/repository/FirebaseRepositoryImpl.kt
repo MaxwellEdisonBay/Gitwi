@@ -252,7 +252,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                         System.currentTimeMillis(),
                         currentUser.profile_image_urls.values.toList()[0].url,
                         currentUser.name,
-                        Constants.EMPTY_LAST_MESSAGE,
+                        Constants.EMPTY_LAST_MESSAGE + "${currentUser.name}!",
                         System.currentTimeMillis()
                     )
                     database.child(user.uid).child("matches").child(currentUser.uid)
