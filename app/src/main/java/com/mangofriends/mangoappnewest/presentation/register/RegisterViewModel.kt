@@ -1,16 +1,20 @@
 package com.mangofriends.mangoappnewest.presentation.register
 
+import android.app.Application
+import android.content.ContentResolver
+import android.database.Cursor
 import android.net.Uri
+import android.provider.MediaStore
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.NavController
 import com.mangofriends.mangoappnewest.common.Constants
 import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBProfileImageUrl
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.FBTag
-import com.mangofriends.mangoappnewest.domain.model.firebase_models.UserCredentials
 import com.mangofriends.mangoappnewest.domain.repository.FirebaseRepository
 import com.mangofriends.mangoappnewest.domain.use_case.FBRegisterWithCredentialsUseCase
 import com.mangofriends.mangoappnewest.presentation.components.Screen
@@ -20,15 +24,18 @@ import kotlinx.coroutines.flow.launchIn
 import javax.inject.Inject
 import kotlin.math.roundToInt
 
+
 @HiltViewModel
 class RegisterViewModel @Inject constructor(
     private val regUseCase: FBRegisterWithCredentialsUseCase,
-    val firebaseRepository: FirebaseRepository,
+    val firebaseRepository: FirebaseRepository, application: Application
 
-    ) : ViewModel() {
+) : AndroidViewModel(application) {
 
     val state = RegisterState()
     val animationState = AnimationState()
+    val listOfAllImages = mutableStateListOf<Uri>()
+
 
     fun performRegister(
         viewModel: RegisterViewModel,
@@ -43,21 +50,11 @@ class RegisterViewModel @Inject constructor(
         animationState.currentPage.value = route
     }
 
-    fun isData1Correct(): Boolean {
-        return state.emailState.error == null
-                && state.password1State.error == null
-                && state.nameState.error == null
-                && state.nameState.text.isNotBlank()
-                && state.emailState.text.isNotBlank()
-                && state.password1State.text.isNotBlank()
-                && state.password1State.text == state.password2State.text
-    }
-
     fun isData2Correct(): Boolean {
         return state.bioState.error == null
                 && state.ageState.error == null
                 && state.cityState.error == null
-                && state.imageUriState != null
+                && state.imageUriState.value != null
                 && state.ageState.text.isNotBlank()
                 && state.cityState.text.isNotBlank()
                 && state.bioState.text.isNotBlank()
@@ -68,6 +65,24 @@ class RegisterViewModel @Inject constructor(
 
     }
 
+    fun getAllShownImagesPath(contentResolver: ContentResolver) {
+        val uriExternal: Uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        val cursor: Cursor?
+        val columnIndexID: Int
+        val projection = arrayOf(MediaStore.Images.Media._ID)
+        var imageId: Long
+        listOfAllImages.clear()
+        cursor = contentResolver.query(uriExternal, projection, null, null, null)
+        if (cursor != null) {
+            columnIndexID = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID)
+            while (cursor.moveToNext()) {
+                imageId = cursor.getLong(columnIndexID)
+                val uriImage = Uri.withAppendedPath(uriExternal, "" + imageId)
+                listOfAllImages.add(uriImage)
+            }
+            cursor.close()
+        }
+    }
 
 }
 
@@ -78,13 +93,13 @@ class RegisterState {
     val password2State: PasswordFieldState = PasswordFieldState()
     val bioState: LongTextFieldState = LongTextFieldState()
     val ageState: AgeFieldState = AgeFieldState()
-    val cityState: StandardNameFieldState = StandardNameFieldState()
-    val imageUriState: MutableState<Uri?> = mutableStateOf(null)
-    val genderState: MutableState<String> = mutableStateOf("-")
+    val cityState: ShortASCIIFieldState = ShortASCIIFieldState()
+    val imageUriState: MutableState<ImageUriState> = mutableStateOf(ImageUriState())
+    val genderState: MutableState<GenderState> = mutableStateOf(GenderState())
 
     val searchMinAgeState: MutableState<Float> = mutableStateOf(Constants.MIN_AGE)
     val searchMaxAgeState: MutableState<Float> = mutableStateOf(Constants.MAX_AGE)
-    val searchCityState: StandardNameFieldState = StandardNameFieldState()
+    val searchCityState: ShortASCIIFieldState = ShortASCIIFieldState()
     var searchAgeSliderPositionState = mutableStateOf(Constants.MIN_AGE..Constants.MAX_AGE)
     val searchInterestTagSwitch: MutableState<Boolean> = mutableStateOf(false)
 
@@ -92,13 +107,14 @@ class RegisterState {
     val urlState = mutableListOf<FBProfileImageUrl>()
     val tagState = mutableListOf<FBTag>()
 
+    val error = mutableStateOf("")
     var isLoading = mutableStateOf(false)
 
     fun getProfile(): DTOUserProfile {
         return DTOUserProfile(
             this.ageState.text.toInt(),
             this.bioState.text,
-            this.genderState.value,
+            this.genderState.value.gender,
             "",
             this.cityState.text,
             this.nameState.text,
@@ -117,13 +133,19 @@ class RegisterState {
 
         )
     }
-
-    fun getCredentials(): UserCredentials {
-        return UserCredentials(this.emailState.text, this.password1State.text)
-    }
 }
 
 data class AnimationState(
     val direction: MutableState<Boolean> = mutableStateOf(true),
     val currentPage: MutableState<String> = mutableStateOf(Screen.RegisterStep1.route)
+)
+
+data class ImageUriState(
+    val uri: Uri? = null,
+    val error: String? = null
+)
+
+data class GenderState(
+    val gender: String = "-",
+    val error: String? = null
 )

@@ -41,9 +41,8 @@ object Constants {
         Icons.Filled.LocationCity,
         Icons.Filled.Work,
         Icons.Filled.ShortText
-
-
     )
+    const val SKIP_REGISTER_ANIMATION_MIN_DP = 600
 
 
 }

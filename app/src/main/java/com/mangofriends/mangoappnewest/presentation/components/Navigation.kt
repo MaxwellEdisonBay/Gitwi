@@ -1,6 +1,7 @@
 package com.mangofriends.mangoappnewest.presentation.components
 
 import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -18,6 +19,7 @@ import com.mangofriends.mangoappnewest.presentation.login.LoginScreen
 import com.mangofriends.mangoappnewest.presentation.main.MainScreen
 import com.mangofriends.mangoappnewest.presentation.register.RegisterScreen
 
+@ExperimentalFoundationApi
 @ExperimentalCoilApi
 @ExperimentalComposeUiApi
 @ExperimentalMaterialApi
@@ -64,10 +66,10 @@ fun Navigation() {
 
             composable(
                 route = Screen.DetailsScreen.route
-            ){
+            ) {
                 val profile =
                     navController.previousBackStackEntry?.arguments?.getParcelable<DTOUserProfile>("profile")
-                if (profile != null ) {
+                if (profile != null) {
                     DetailsScreen(profile, navController)
                 }
             }

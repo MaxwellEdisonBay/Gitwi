@@ -1,6 +1,6 @@
 package com.mangofriends.mangoappnewest.data.repository
 
-import android.net.Uri
+import android.app.Application
 import android.util.Log
 import androidx.navigation.NavController
 import com.google.firebase.auth.FirebaseAuth
@@ -15,12 +15,14 @@ import com.mangofriends.mangoappnewest.common.Constants
 import com.mangofriends.mangoappnewest.domain.model.dto.DTOUserProfile
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.*
 import com.mangofriends.mangoappnewest.domain.repository.FirebaseRepository
+import com.mangofriends.mangoappnewest.presentation.components.ImageUtils
 import com.mangofriends.mangoappnewest.presentation.components.Screen
 import com.mangofriends.mangoappnewest.presentation.main.MainViewModel
 import com.mangofriends.mangoappnewest.presentation.register.RegisterViewModel
 import kotlinx.coroutines.tasks.await
 import java.util.*
 import javax.inject.Inject
+
 
 class FirebaseRepositoryImpl @Inject constructor(
 
@@ -41,10 +43,9 @@ class FirebaseRepositoryImpl @Inject constructor(
             viewModel.state.uidState.value = auth.currentUser!!.uid
             uploadImagesToFireCloud(viewModel, navController, onError)
             Log.d("REGISTER AUTH", "SUCCESS UID ${viewModel.state.uidState.value}")
-        }.addOnFailureListener { e ->
-            result.status = Constants.CODE_ERROR
-            result.message = e.message.toString()
-            onError.invoke(e.message.toString())
+        }.addOnFailureListener {
+            viewModel.state.error.value = it.message ?: ""
+            viewModel.state.isLoading.value = false
         }.await()
 
 
@@ -71,7 +72,6 @@ class FirebaseRepositoryImpl @Inject constructor(
                 }
             }
             .addOnFailureListener {
-
                 result.status = Constants.CODE_ERROR
                 result.message = it.message.toString()
                 onError.invoke(result.message)
@@ -88,12 +88,13 @@ class FirebaseRepositoryImpl @Inject constructor(
         onError: (String) -> Unit
     ): FBRequestCall {
         val result = FBRequestCall()
-
-
+        val uri = viewModel.state.imageUriState.value.uri
         val storageRef = Firebase.storage.reference
         val imageUUID = UUID.randomUUID()
         val ref = storageRef.child("images/$imageUUID")
-        val uploadTask = ref.putFile(Uri.parse(viewModel.state.imageUriState.value.toString()))
+        val contentResolver = viewModel.getApplication<Application>().contentResolver
+        val compressedBytes = ImageUtils.getCompressedBytes(contentResolver, uri!!)
+        val uploadTask = ref.putBytes(compressedBytes)
 
         uploadTask.continueWithTask { task ->
             if (!task.isSuccessful) {
@@ -121,10 +122,16 @@ class FirebaseRepositoryImpl @Inject constructor(
                 result.status = Constants.CODE_ERROR
                 result.message = task.exception!!.message.toString()
                 onError.invoke(result.message)
-                Log.d("DOWNLOAD", "ERROR ${task.exception!!.message.toString()}")
+//                Log.d("DOWNLOAD", "ERROR ${task.exception!!.message.toString()}")
             }
 
         }
+            .addOnFailureListener {
+                viewModel.state.error.value = it.message ?: ""
+                viewModel.state.isLoading.value = false
+            }
+
+
         return result
     }
 
@@ -161,21 +168,21 @@ class FirebaseRepositoryImpl @Inject constructor(
                                 Log.d("USER INFO", "SUCCESS #2 - User profile interest tags")
                                 result.status = Constants.CODE_SUCCESS
                                 viewModel.state.isLoading.value = false
-                                navController.navigate(Screen.MainScreen.route + "/Maxwell") {
+                                navController.navigate(Screen.MainScreen.route) {
                                     popUpTo(0)
                                 }
+                            }.addOnFailureListener {
+                                viewModel.state.error.value = it.message ?: ""
+                                viewModel.state.isLoading.value = false
                             }
+                    }.addOnFailureListener {
+                        viewModel.state.error.value = it.message ?: ""
+                        viewModel.state.isLoading.value = false
                     }
+
             }.addOnFailureListener {
-                result.status = Constants.CODE_ERROR
-                result.message = it.message.toString()
-                onError.invoke(result.message)
-                Log.d("USER INFO", "ERROR #2 ${result.message}")
-            }.addOnFailureListener {
-                result.status = Constants.CODE_ERROR
-                result.message = it.message.toString()
-                onError.invoke(result.message)
-                Log.d("USER INFO", "ERROR #1 ${result.message}")
+                viewModel.state.error.value = it.message ?: ""
+                viewModel.state.isLoading.value = false
             }
 
         return result
@@ -252,7 +259,7 @@ class FirebaseRepositoryImpl @Inject constructor(
                         System.currentTimeMillis(),
                         currentUser.profile_image_urls.values.toList()[0].url,
                         currentUser.name,
-                        Constants.EMPTY_LAST_MESSAGE,
+                        Constants.EMPTY_LAST_MESSAGE + "${currentUser.name}!",
                         System.currentTimeMillis()
                     )
                     database.child(user.uid).child("matches").child(currentUser.uid)

@@ -118,15 +118,15 @@ fun CardView(
                     sendLikeHandler.invoke()
                 }
             },
-        infoActionHandler = {
-            navController.currentBackStackEntry!!.arguments!!.putParcelable(
-                "profile",
-                it
-            )
+            infoActionHandler = {
+                navController.currentBackStackEntry!!.arguments!!.putParcelable(
+                    "profile",
+                    it
+                )
 
 
-            navController.navigate(Screen.DetailsScreen.route)
-        })
+                navController.navigate(Screen.DetailsScreen.route)
+            })
     }
 }
 
@@ -139,7 +139,7 @@ fun CardDeck(
     coroutineScope: CoroutineScope,
     model: CardDeckModel,
     events: CardDeckEvents,
-    infoActionHandler:(cardData : DTOUserProfile) -> Unit = {},
+    infoActionHandler: (cardData: DTOUserProfile) -> Unit = {},
     leftActionHandler: () -> Unit = {},
     rightActionHandler: () -> Unit = {},
 ) {
@@ -187,7 +187,7 @@ fun CardDeck(
                             index = card.index,
                             data = cardData,
                             infoActionHandler = {
-                               infoActionHandler.invoke(cardData)
+                                infoActionHandler.invoke(cardData)
                             },
                             leftActionHandler = {
                                 Log.d("ACTION", "Left action ${cardData.name}")

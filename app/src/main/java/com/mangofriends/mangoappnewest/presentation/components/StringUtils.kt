@@ -8,5 +8,11 @@ class StringUtils {
             } else
                 string
         }
+
+        fun CharSequence.ignoreBlank(): String {
+            return if (this.isBlank())
+                ""
+            else this.toString().trimStart()
+        }
     }
 }
