@@ -225,12 +225,11 @@ fun GenderDropDown(viewModel: RegisterViewModel) {
     } else {
         Icons.Filled.KeyboardArrowDown
     }
-    Column() {
+    Column(Modifier.padding(vertical = 16.dp)) {
 
 
         Column(
             modifier = Modifier
-                .padding(top = 20.dp, bottom = 20.dp)
                 .fillMaxWidth()
         ) {
             OutlinedTextField(

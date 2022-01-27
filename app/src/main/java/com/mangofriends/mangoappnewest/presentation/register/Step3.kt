@@ -66,13 +66,5 @@ fun Step3Body(viewModel: RegisterViewModel, navController: NavController) {
             InterestTagSwitch(viewModel)
 
         }
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(20.dp),
-            contentAlignment = Alignment.BottomEnd
-        ) {
-            Next3Button(viewModel, navController)
-        }
     }
 }
