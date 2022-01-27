@@ -30,6 +30,7 @@ import com.mangofriends.mangoappnewest.R
 import com.mangofriends.mangoappnewest.domain.model.firebase_models.UserCredentials
 import com.mangofriends.mangoappnewest.presentation.components.Screen
 import com.mangofriends.mangoappnewest.presentation.login.LoginViewModel
+import com.mangofriends.mangoappnewest.presentation.ui.components.MngTextField
 import com.mangofriends.mangoappnewest.presentation.ui.theme.Pink
 
 
@@ -98,7 +99,7 @@ fun RegisterText(navController: NavController) {
 fun EmailTextField(viewModel: LoginViewModel) {
     val emailState = remember { viewModel.emailState }
     Column() {
-        TextField(
+        MngTextField(
             modifier = Modifier
                 .fillMaxWidth(),
             value = emailState.text,
@@ -107,15 +108,9 @@ fun EmailTextField(viewModel: LoginViewModel) {
                 emailState.validate()
             },
             label = { Text(text = stringResource(id = R.string.login_hint)) },
-            colors = TextFieldDefaults.textFieldColors(
-                focusedIndicatorColor = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent
-            ),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-            shape = MaterialTheme.shapes.medium,
             isError = emailState.error != null,
-
-            )
+        )
         emailState.error?.let {
             ErrorField(it)
         }

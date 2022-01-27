@@ -68,7 +68,6 @@ fun BottomBar(onMessageClicked: () -> Unit, onSettingsClicked: () -> Unit) {
 @ExperimentalCoilApi
 @Composable
 fun Drawer(viewModel: MainViewModel, navController: NavController) {
-    // Column Composable
     Column(
         Modifier
             .background(Color.White)
@@ -81,7 +80,8 @@ fun Drawer(viewModel: MainViewModel, navController: NavController) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             val currentUser by remember { viewModel.currentUser }
-            val profiles = currentUser.matches.values.toList()
+            val profiles =
+                currentUser.matches.values.toList().sortedByDescending { it.last_message_time }
             Row(
                 modifier = Modifier
                     .fillMaxWidth(),

@@ -1,6 +1,6 @@
 package com.mangofriends.mangoappnewest.presentation.input
 
-import java.util.regex.Pattern
+import android.util.Patterns
 
 class EmailFieldState : TextFieldState(
     validator = ::isUsernameValid,
@@ -9,8 +9,12 @@ class EmailFieldState : TextFieldState(
 )
 
 private const val VALIDATION_REGEX = "[A-Za-z0-9@.+-]*"
-private fun isUsernameValid(username: String): Boolean {
-    return (Pattern.matches(VALIDATION_REGEX, username))
+private fun isUsernameValid(email: String): Boolean {
+//    return (Pattern.matches(VALIDATION_REGEX, username))
+    return if (email.isNotEmpty())
+        Patterns.EMAIL_ADDRESS.matcher(email).matches();
+    else
+        true
 }
 
 private fun usernameErrorMessage(username: String) = "Email $username is invalid"

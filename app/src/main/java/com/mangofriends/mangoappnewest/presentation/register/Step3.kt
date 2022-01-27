@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.FabPosition
+import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -22,11 +24,21 @@ fun Step3(
     navController: NavController,
     viewModel: RegisterViewModel = hiltViewModel()
 ) {
-    val focusManager = LocalFocusManager.current
-    val interactionSource = remember { MutableInteractionSource() }
     BackHandler(onBack = {
         viewModel.moveToPage(Screen.RegisterStep2.route, true)
     })
+    Scaffold(floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = { Next3Button(viewModel, navController) }
+    ) {
+        Step3Body(viewModel = viewModel, navController = navController)
+    }
+}
+
+@ExperimentalMaterialApi
+@Composable
+fun Step3Body(viewModel: RegisterViewModel, navController: NavController) {
+    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
     Column(
         modifier = Modifier
             .fillMaxSize()

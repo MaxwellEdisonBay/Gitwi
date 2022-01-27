@@ -2,8 +2,8 @@ package com.mangofriends.mangoappnewest.presentation.register.components
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.util.Log
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
@@ -63,6 +63,8 @@ fun SearchInfoLabel() {
 fun Next3Button(viewModel: RegisterViewModel, navController: NavController) {
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
+    val resources = context.resources
+    val inputErr = stringResource(id = R.string.error_msg_incorrect_input)
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { isGranted: Boolean ->
@@ -84,7 +86,13 @@ fun Next3Button(viewModel: RegisterViewModel, navController: NavController) {
                         context,
                         Manifest.permission.INTERNET
                     ) -> {
-                        // Some works that require permission
+                        if (step3ErrorHandler(viewModel, resources)) {
+                            viewModel.performRegister(viewModel, navController, onError = {
+                                viewModel.state.error.value = it
+                            })
+                        } else {
+                            viewModel.state.error.value = inputErr
+                        }
                         Log.d("REGISTRATION", "Code requires permission")
                     }
                     else -> {
@@ -92,18 +100,6 @@ fun Next3Button(viewModel: RegisterViewModel, navController: NavController) {
                         launcher.launch(Manifest.permission.INTERNET)
                     }
                 }
-                if (viewModel.isData3Correct()) {
-                    viewModel.performRegister(viewModel, navController, onError = {
-                        Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-                    })
-                } else {
-                    Toast.makeText(context, R.string.error_msg_incorrect_input, Toast.LENGTH_SHORT)
-                        .show()
-                }
-//                viewModel.performRegister(viewModel, navController, onError = {
-//                    Toast.makeText(context, it, Toast.LENGTH_SHORT).show()
-//                })
-
             },
             border = BorderStroke(0.dp, Color.Transparent),
             modifier = Modifier.size(50.dp),
@@ -167,26 +163,28 @@ fun AgeSlider(viewModel: RegisterViewModel) {
 @Composable
 fun SearchCityTextField(viewModel: RegisterViewModel) {
     val searchCityState = remember { viewModel.state.searchCityState }
-    TextField(
-        modifier = Modifier
-            .fillMaxWidth(),
-        value = searchCityState.text,
-        onValueChange = {
-            searchCityState.onChanged(it)
-            searchCityState.validate()
-        },
-        label = { Text(text = stringResource(id = R.string.reg_search_city_hint)) },
-        colors = TextFieldDefaults.textFieldColors(
-            focusedIndicatorColor = Color.Transparent,
-            unfocusedIndicatorColor = Color.Transparent
-        ),
-        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
-        shape = MaterialTheme.shapes.medium,
-        isError = searchCityState.error != null,
+    Column {
+        TextField(
+            modifier = Modifier
+                .fillMaxWidth(),
+            value = searchCityState.text,
+            onValueChange = {
+                searchCityState.onChanged(it)
+                searchCityState.validate()
+            },
+            label = { Text(text = stringResource(id = R.string.reg_search_city_hint)) },
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent
+            ),
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
+            shape = MaterialTheme.shapes.medium,
+            isError = searchCityState.error != null,
 
-        )
-    searchCityState.error?.let {
-        ErrorField(it)
+            )
+        searchCityState.error?.let {
+            ErrorField(it)
+        }
     }
 }
 
@@ -211,4 +209,14 @@ fun InterestTagSwitch(viewModel: RegisterViewModel) {
         )
     }
 
+}
+
+fun step3ErrorHandler(viewModel: RegisterViewModel, resources: Resources): Boolean {
+    val state = viewModel.state
+    val errReq = resources.getString(R.string.error_fill_this_field)
+
+    if (state.searchCityState.text.isBlank())
+        state.searchCityState.error = errReq
+
+    return state.searchCityState.error == null
 }

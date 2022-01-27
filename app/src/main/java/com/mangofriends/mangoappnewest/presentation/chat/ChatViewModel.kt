@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.mangofriends.mangoappnewest.common.Constants
@@ -38,7 +39,7 @@ class ChatViewModel @Inject constructor(
         if (message.isNotEmpty()) {
             Firebase.firestore.collection(Constants.MESSAGES).document().set(
                 hashMapOf(
-                    Constants.MESSAGE to message,
+                    Constants.MESSAGE to message.trimIndent().trim(),
                     Constants.FROM_TO_UID to "$fromUid ${match.uid}",
                     Constants.TIMESTAMP to System.currentTimeMillis(),
                     Constants.MATCH_NAME to match.name,
@@ -48,6 +49,15 @@ class ChatViewModel @Inject constructor(
             ).addOnSuccessListener {
                 _message.value = ""
             }
+            val database = FirebaseDatabase.getInstance().getReference("/users")
+            database.child("$fromUid/matches/${match.uid}/last_message").setValue(message)
+            database.child("$fromUid/matches/${match.uid}/last_message_time")
+                .setValue(System.currentTimeMillis())
+            database.child("${match.uid}/matches/${fromUid}/last_message").setValue(message)
+            database.child("${match.uid}/matches/${fromUid}/last_message_time")
+                .setValue(System.currentTimeMillis())
+
+
         }
     }
 
