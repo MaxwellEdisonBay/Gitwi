@@ -51,6 +51,9 @@
     <string name="settings_log_out">Log out</string>
     <string name="drawer_title">\ - Messages</string>
 
+    <string name="settings_title_1">Settings</string>
+    <string name="settings_title_2">Tap to edit your profile info</string>
+    
     <string name="error_fill_this_field">Required field</string>
     <string name="error_pick_gender">Pick your gender</string>
     <string name="error_add_profile_image">Please, add your profile image</string>

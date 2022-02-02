@@ -63,14 +63,12 @@ fun ChatScreen(
     val messages: List<Map<String, Any>> by viewModel.messages.observeAsState(
         initial = emptyList<Map<String, Any>>().toMutableList()
     )
-    val isLoading by remember {
-        viewModel.isLoading
-    }
+    val isLoading by remember { viewModel.isLoading }
     val activity = LocalContext.current as Activity
     val window = activity.window
     var shouldResize = false // false will resize
     shouldResize = messages.size > 1
-
+//    Log.d("IS TYPING", isTyping.toString())
 //    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 //        window.setDecorFitsSystemWindows(shouldResize)
 ////        shouldResize = shouldResize.not()
@@ -98,7 +96,6 @@ fun ChatScreen(
                     interactionSource = interactionSource,
                     indication = null
                 ) {
-
                     focusManager.clearFocus()
                 },
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -122,38 +119,44 @@ fun ChatScreen(
                     color = Color.White,
                 )
             }
-
-            LazyColumn(
+            Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 8.dp)
                     .weight(weight = 8f, fill = false)
+            ) {
+                LazyColumn(
+                    modifier = Modifier
+                        .wrapContentHeight()
+                        .align(Alignment.BottomCenter)
 //                    .bringIntoViewRequester(relocation)
 //                    .onFocusEvent {
 //                        if (it.isFocused) scope.launch { delay(300); relocation.bringIntoView() }
 //                    }
-                ,
+                    ,
 //                contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                reverseLayout = true
-            ) {
-                itemsIndexed(messages) { index, message ->
-                    val isCurrentUser = message[Constants.IS_CURRENT_USER] as Boolean
-                    if (index == 0) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
-                    SingleMessage(
-                        match = match,
-                        message = message,
-                        myPhoto = myPhoto,
-                        isCurrentUser = isCurrentUser
-                    )
-                    if (index == messages.lastIndex) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                    }
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    reverseLayout = true
+                ) {
+                    itemsIndexed(messages) { index, message ->
+                        val isCurrentUser = message[Constants.IS_CURRENT_USER] as Boolean
+                        if (index == 0) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
+                        SingleMessage(
+                            match = match,
+                            message = message,
+                            myPhoto = myPhoto,
+                            isCurrentUser = isCurrentUser
+                        )
+                        if (index == messages.lastIndex) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                        }
 
+                    }
                 }
             }
+
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -162,17 +165,23 @@ fun ChatScreen(
                     .weight(weight = 1f, fill = true)
                     .bringIntoViewRequester(relocation)
                     .onFocusEvent {
-                        if (it.isFocused) scope.launch { delay(200); relocation.bringIntoView() }
-                    },
+                        if (it.isFocused) scope.launch {
+                            delay(200);
+                            relocation.bringIntoView()
+                        }
+                    }
+
             ) {
+                val color = if (message.isEmpty()) Color.Gray else Color.White
+
                 OutlinedTextField(
                     value = message,
                     onValueChange = {
                         viewModel.updateMessage(it.ignoreBlank())
                     },
-                    placeholder = {
-                        Text(text = messageHint)
-                    },
+                    label = { Text(text = messageHint, color = color) },
+//                    placeholder = { Text(text = messageHint, modifier = Modifier.fillMaxSize().align(
+//                        Alignment.CenterStart)) },
                     maxLines = 1,
                     modifier = Modifier
                         .padding(horizontal = 15.dp, vertical = 8.dp)
@@ -185,6 +194,8 @@ fun ChatScreen(
                         focusedBorderColor = Color.White,
                         trailingIconColor = Color.Gray,
                         disabledTrailingIconColor = LightPink,
+                        focusedLabelColor = Color.Gray,
+                        unfocusedLabelColor = Color.Gray
                     ),
                     keyboardOptions = KeyboardOptions(
                         keyboardType = KeyboardType.Text
@@ -204,6 +215,18 @@ fun ChatScreen(
                             }
                     }
                 )
+//                Box(modifier = Modifier.fillMaxSize()){
+//                    if (message.isEmpty())
+//                    Text(
+//                        text = messageHint, modifier = Modifier
+////                        .fillMaxSize()
+//                            .align(
+//                                Alignment.CenterStart
+//                            ).padding(start = 16.dp), color = Color.Black
+//                    )
+//                }
+
+
             }
 
         }
