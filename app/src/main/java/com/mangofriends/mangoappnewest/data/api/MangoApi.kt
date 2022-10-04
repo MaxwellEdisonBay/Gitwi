@@ -5,6 +5,6 @@ import retrofit2.http.GET
 import retrofit2.http.Path
 
 interface MangoApi {
-    @GET("/get-users/{uid}")
+    @GET("get-users/{uid}")
     suspend fun getProfiles(@Path("uid") uid: String): List<DTOUserProfile>
 }
